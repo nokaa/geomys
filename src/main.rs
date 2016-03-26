@@ -1,11 +1,14 @@
 extern crate rotor;
 
 use std::io::{Write, stderr};
+use std::str;
 
 use rotor::{EventSet, PollOpt, Loop, Config, Void};
 use rotor::mio::{TryRead, TryWrite};
 use rotor::mio::tcp::{TcpListener, TcpStream};
 use rotor::{Machine, Response, EarlyScope, Scope};
+
+mod response;
 
 
 struct Context;
@@ -72,7 +75,9 @@ impl Machine for Gopher {
                         Response::done()
                     }
                     Ok(Some(x)) => {
-                        match sock.try_write(&data[..x]) {
+                        println!("{}", str::from_utf8(&data).unwrap());
+                        Response::done()
+                        /*match sock.try_write(&data[..x]) {
                             Ok(_) => {
                                 // this is example so we don't care if not all
                                 // (or none at all) bytes are written
@@ -82,7 +87,7 @@ impl Machine for Gopher {
                                 writeln!(&mut stderr(), "write: {}", e).ok();
                                 Response::done()
                             }
-                        }
+                        }*/
                     }
                     Ok(None) => {
                         Response::ok(Gopher::Connection(sock))

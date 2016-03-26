@@ -5,3 +5,8 @@ authors = ["nokaa <nokaa@cock.li>"]
 
 [dependencies]
 rotor = "0.6.3"
+
+[dev-dependencies]
+argparse = "0.2.1"
+nix = "0.4.2"
+void = "1.0.0"
