@@ -32,7 +32,8 @@ pub fn local_path_for_request(request_path: &[u8], root_dir: &String) -> Option<
 
     if index {
         let len = f.len() - 1;
-        if f[len] == b'\n' {
+        if f[len] == b'\n' && f[len - 1] == b'\r' {
+        } else if f[len] == b'\n' && f[len - 1] != b'\r' {
             f.insert(len, b'\r');
         } else {
             f.push(b'\r');
@@ -40,9 +41,6 @@ pub fn local_path_for_request(request_path: &[u8], root_dir: &String) -> Option<
         }
         f.push(b'.');
     }
-
-    let fS = String::from_utf8(f.clone()).unwrap();
-    println!("{}", fS);
 
     Some(f)
 }
