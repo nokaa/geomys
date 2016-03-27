@@ -79,7 +79,8 @@ impl Machine for Gopher {
                         match local_path_for_request(&data, &scope.root_dir) {
                             Some(p) => {
                                 match sock.try_write(&p) {
-                                    Ok(_) => Response::ok(Gopher::Connection(sock)),
+                                    Ok(_) => Response::done(),
+                                    //Ok(_) => Response::ok(Gopher::Connection(sock)),
                                     Err(e) => {
                                         writeln!(&mut stderr(), "write: {}", e).ok();
                                         Response::done()
