@@ -1,5 +1,4 @@
 use std::io::{Write, stderr};
-use std::str;
 
 use rotor::{EventSet, PollOpt, Void};
 use rotor::mio::{TryRead, TryWrite};
@@ -74,13 +73,10 @@ impl Machine for Gopher {
                         Response::done()
                     }
                     Ok(Some(_)) => {
-                        let data_str = str::from_utf8(&data).unwrap();
-                        println!("{}", data_str);
                         match local_path_for_request(&data, &scope.root_dir) {
                             Some(p) => {
                                 match sock.try_write(&p) {
                                     Ok(_) => Response::done(),
-                                    //Ok(_) => Response::ok(Gopher::Connection(sock)),
                                     Err(e) => {
                                         writeln!(&mut stderr(), "write: {}", e).ok();
                                         Response::done()

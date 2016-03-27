@@ -23,23 +23,18 @@ pub fn local_path_for_request(request_path: &[u8], root_dir: &String) -> Option<
     let path = String::from_utf8(path).unwrap();
 
     // Read file
-    let mut f = match read_file(path) {
-        Ok(f) => f,
-        Err(_) => {
-            return None
-        }
-    };
-
+    let mut f: Vec<u8>;
     if index {
-        let len = f.len() - 1;
-        if f[len] == b'\n' && f[len - 1] == b'\r' {
-        } else if f[len] == b'\n' && f[len - 1] != b'\r' {
-            f.insert(len, b'\r');
-        } else {
-            f.push(b'\r');
-            f.push(b'\n');
-        }
+        f = match read_index(path) {
+            Ok(f) => f,
+            Err(_) => return None,
+        };
         f.push(b'.');
+    } else {
+        f = match read_file(path) {
+            Ok(f) => f,
+            Err(_) => return None,
+        };
     }
 
     Some(f)
@@ -49,6 +44,26 @@ fn read_file(filename: String) -> Result<Vec<u8>, io::Error> {
     let mut f = try!(File::open(filename));
     let mut buf: Vec<u8> = vec![];
     try!(f.read_to_end(&mut buf));
+
+    Ok(buf)
+}
+
+fn read_index(filename: String) -> Result<Vec<u8>, io::Error> {
+    let f = try!(File::open(filename));
+    let mut buf: Vec<u8> = vec![];
+
+    for byte in f.bytes() {
+        match byte {
+            Err(e) => return Err(e),
+            Ok(b) => match b {
+                b'\n' => {
+                    buf.push(b'\r');
+                    buf.push(b);
+                }
+                _ => buf.push(b),
+            }
+        }
+    }
 
     Ok(buf)
 }
