@@ -72,8 +72,8 @@ impl Machine for Gopher {
                     Ok(Some(0)) => {
                         Response::done()
                     }
-                    Ok(Some(_)) => {
-                        match local_path_for_request(&data, &scope.root_dir) {
+                    Ok(Some(x)) => {
+                        match local_path_for_request(&data[..x], &scope.root_dir) {
                             Some(p) => {
                                 match sock.try_write(&p) {
                                     Ok(Some(x)) => {

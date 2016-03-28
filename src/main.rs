@@ -15,10 +15,9 @@ fn main() {
     };
 
     let mut loop_creator = Loop::new(&Config::new()).unwrap();
-    let lst = TcpListener::bind(&"127.0.0.1:3000".parse().unwrap()).unwrap();
+    let lst = TcpListener::bind(&"0.0.0.0:70".parse().unwrap()).unwrap();
     loop_creator.add_machine_with(|scope| {
         Gopher::new(lst, scope)
     }).unwrap();
     loop_creator.run(context).unwrap();
 }
-

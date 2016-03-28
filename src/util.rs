@@ -3,17 +3,18 @@ use std::io::{self, Read};
 
 pub fn local_path_for_request(request_path: &[u8], root_dir: &String) -> Option<Vec<u8>> {
     let mut index = false;
-    // Check that request is a path
-    if request_path[0] != b'/' {
-        return None;
-    }
 
     // Append the requested path to the root directory
     let mut path = root_dir.clone().into_bytes();
-    let mut request_path = get_nonzero_bytes(request_path);
+    let mut request_path = request_path.to_vec();
     request_path.pop(); // Remove LF
     request_path.pop(); // Remove CR
-    path.append(&mut request_path);
+
+    if request_path == vec![] {
+        path.push(b'/');
+    } else {
+        path.append(&mut request_path);
+    }
 
     if path[path.len() - 1] == b'/' {
         path.append(&mut String::from("index.gph").into_bytes());
@@ -66,17 +67,4 @@ fn read_index(filename: String) -> Result<Vec<u8>, io::Error> {
     }
 
     Ok(buf)
-}
-
-fn get_nonzero_bytes(data: &[u8]) -> Vec<u8> {
-    let mut buf: Vec<u8> = vec![];
-    for &ch in data {
-        if ch == 0u8 {
-            continue;
-        } else {
-            buf.push(ch);
-        }
-    }
-
-    buf
 }
