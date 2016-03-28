@@ -2,16 +2,8 @@
 name = "geomys"
 version = "0.1.0"
 dependencies = [
- "argparse 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "nix 0.4.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "rotor 0.6.3 (registry+https://github.com/rust-lang/crates.io-index)",
- "void 1.0.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
-
-[[package]]
-name = "argparse"
-version = "0.2.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "bitflags"
