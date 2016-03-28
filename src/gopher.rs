@@ -1,4 +1,5 @@
 use std::io::{Write, stderr};
+use std::str;
 
 use rotor::{EventSet, PollOpt, Void};
 use rotor::mio::{TryRead, TryWrite};
@@ -90,7 +91,17 @@ impl Machine for Gopher {
                                     }
                                 }
                             }
-                            None => Response::done(),
+                            None => {
+                                let token = str::from_utf8(&data[..x-2]).unwrap();
+                                let d = &format!("3Sorry, but the requested token '{}' could not be found.\tErr\tlocalhost\t70\r\n.", token)[..];
+                                match sock.try_write(d.as_bytes()) {
+                                    Ok(_) => Response::done(),
+                                    Err(e) => {
+                                        writeln!(&mut stderr(), "write: {}", e).ok();
+                                        Response::done()
+                                    }
+                                }
+                            }
                         }
                     }
                     Ok(None) => {
