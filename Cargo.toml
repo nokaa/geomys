@@ -4,4 +4,5 @@ version = "0.1.0"
 authors = ["nokaa <nokaa@cock.li>"]
 
 [dependencies]
+clap = "1.5.5"
 rotor = "0.6.3"
