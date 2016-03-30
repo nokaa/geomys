@@ -83,20 +83,23 @@ impl Machine for Gopher {
                     Ok(Some(x)) => {
                         match local_path_for_request(&data[..x], &scope.root_dir) {
                             Some(p) => {
-                                match sock.try_write(&p) {
-                                    Ok(Some(x)) => {
-                                        // TODO(nokaa): keep writing while x < p.len
-                                        if x < p.len() {
-                                            println!("not enough");
+                                let mut b = 0; // The number of bytes written so far.
+                                while b < p.len() {
+                                    match sock.try_write(&p[b..]) {
+                                        Ok(Some(x)) => {
+                                            b += x
                                         }
-                                        Response::done()
-                                    }
-                                    Ok(None) => Response::done(),
-                                    Err(e) => {
-                                        writeln!(&mut stderr(), "write: {}", e).ok();
-                                        Response::done()
+                                        Ok(None) => {
+                                            return Response::done();
+                                        }
+                                        Err(e) => {
+                                            writeln!(&mut stderr(), "write: {}", e).ok();
+                                            return Response::done();
+                                        }
                                     }
                                 }
+
+                                Response::done()
                             }
                             None => {
                                 let token = str::from_utf8(&data[..x-2]).unwrap();
