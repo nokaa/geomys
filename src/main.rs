@@ -20,6 +20,7 @@ use gopher::{Context, Gopher};
 fn main() {
     let matches = App::new("geomys")
         .version("0.1")
+        .author("nokaa <nokaa@cock.li>")
         .about("An async gopher server")
         .args_from_usage(
             "-a, --addr=[ADDR] 'Sets the IP:PORT combination (default \"0.0.0.0:70\")'
