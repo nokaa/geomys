@@ -17,6 +17,22 @@ use super::util::*;
 
 pub struct Context {
     pub root_dir: String,
+    pub counter: usize,
+}
+
+trait Counter {
+    fn increment(&mut self);
+    fn get(&self) -> usize;
+}
+
+impl Counter for Context {
+    fn increment(&mut self) {
+        self.counter += 1;
+    }
+
+    fn get(&self) -> usize {
+        self.counter
+    }
 }
 
 pub enum Gopher {
@@ -60,6 +76,7 @@ impl Machine for Gopher {
     fn create(conn: TcpStream, scope: &mut Scope<Context>)
         -> Response<Self, Void>
     {
+        scope.increment();
         scope.register(&conn, EventSet::readable(), PollOpt::level())
             .unwrap();
         Response::ok(Gopher::Connection(conn))

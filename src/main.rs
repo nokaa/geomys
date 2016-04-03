@@ -35,6 +35,7 @@ fn main() {
 
     let context = Context {
         root_dir: root_dir,
+        counter: 0,
     };
 
     let mut loop_creator = Loop::new(&Config::new()).unwrap();
