@@ -5,20 +5,28 @@
  * The license may also be found at https://gnu.org/licenses/agpl.txt
  */
 
+use rotor::Scope;
+
+use gopher::{Context, Counter};
+
 use std::fs::File;
 use std::io::{self, Read};
 
-pub fn local_path_for_request(request_path: &[u8], root_dir: &String) -> Option<Vec<u8>> {
+pub fn local_path_for_request(request_path: &[u8], scope: &Scope<Context>) -> Option<Vec<u8>> {
     let mut index = false;
 
     // Append the requested path to the root directory
-    let mut path = root_dir.clone().into_bytes();
+    let mut path = scope.root_dir.clone().into_bytes();
     let mut request_path = request_path.to_vec();
     request_path.pop(); // Remove LF
     request_path.pop(); // Remove CR
 
     if request_path == vec![] {
         path.push(b'/');
+    } else if request_path == vec![b'/', b'v', b'i', b's', b'i', b't', b's'] {
+        let f = format!("This host has been visited {} times", scope.get())
+            .into_bytes();
+        return Some(f);
     } else {
         path.append(&mut request_path);
     }

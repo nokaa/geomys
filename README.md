@@ -1,6 +1,7 @@
 # Geomys [![Build Status](https://travis-ci.org/nokaa/geomys.svg?branch=master)](https://travis-ci.org/nokaa/geomys)
 
-An async gopher server written in Rust using rotor.
+An async gopher server written in Rust using rotor. The number of visits to
+the server can be viewed at `/visits`.
 
 ### Build
 

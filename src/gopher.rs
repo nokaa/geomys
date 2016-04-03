@@ -20,14 +20,15 @@ pub struct Context {
     pub counter: usize,
 }
 
-trait Counter {
+pub trait Counter {
     fn increment(&mut self);
     fn get(&self) -> usize;
 }
 
 impl Counter for Context {
     fn increment(&mut self) {
-        self.counter += 1;
+        // To prevent crashing on overflow, we simply wrap back to 0.
+        self.counter.wrapping_add(1);
     }
 
     fn get(&self) -> usize {
@@ -98,7 +99,7 @@ impl Machine for Gopher {
                         Response::done()
                     }
                     Ok(Some(x)) => {
-                        match local_path_for_request(&data[..x], &scope.root_dir) {
+                        match local_path_for_request(&data[..x], scope) {
                             Some(p) => {
                                 let mut b = 0; // The number of bytes written so far.
                                 while b < p.len() {
