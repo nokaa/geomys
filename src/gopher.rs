@@ -120,7 +120,11 @@ impl Machine for Gopher {
                                 Response::done()
                             }
                             None => {
-                                let token = str::from_utf8(&data[..x-2]).unwrap();
+                                let token = match str::from_utf8(&data[..x-2]) {
+                                    Ok(t) => t,
+                                    Err(_) => "INVALID",
+                                };
+
                                 let d = &format!("3Sorry, but the requested token '{}' could not be found.\tErr\tlocalhost\t70\r\n.", token)[..];
                                 match sock.try_write(d.as_bytes()) {
                                     Ok(_) => Response::done(),

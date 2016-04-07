@@ -36,7 +36,10 @@ pub fn local_path_for_request(request_path: &[u8], scope: &Scope<Context>) -> Op
         index = true;
     }
 
-    let path = String::from_utf8(path).unwrap();
+    let path = match String::from_utf8(path) {
+        Ok(s) => s,
+        Err(_) => return None,
+    };
 
     // Read file
     let mut f: Vec<u8>;
