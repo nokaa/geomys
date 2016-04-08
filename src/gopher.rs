@@ -17,21 +17,21 @@ use super::util::*;
 
 pub struct Context {
     pub root_dir: String,
-    pub counter: usize,
+    pub counter: u64,
 }
 
 pub trait Counter {
     fn increment(&mut self);
-    fn get(&self) -> usize;
+    fn get(&self) -> u64;
 }
 
 impl Counter for Context {
     fn increment(&mut self) {
         // To prevent crashing on overflow, we simply wrap back to 0.
-        self.counter.wrapping_add(1);
+        self.counter += 1;
     }
 
-    fn get(&self) -> usize {
+    fn get(&self) -> u64 {
         self.counter
     }
 }
