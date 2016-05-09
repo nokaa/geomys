@@ -20,8 +20,7 @@ use rustc_serialize::Decoder;
 
 use gopher::{Context, Gopher};
 
-use std::env;
-use std::fs::File;
+use std::{env, fs, process};
 use std::io::Read;
 
 fn main() {
@@ -78,7 +77,14 @@ fn main() {
     };
 
     let mut loop_creator = Loop::new(&Config::new()).unwrap();
-    let lst = TcpListener::bind(&addr.parse().unwrap()).unwrap();
+    let lst = match TcpListener::bind(&addr.parse().unwrap()) {
+        Ok(l) => l,
+        Err(e) => {
+            println!("{}", e);
+            println!("Note that running on a port below 1000 requires root");
+            process::exit(1);
+        }
+    };
     loop_creator.add_machine_with(|scope| {
         Gopher::new(lst, scope)
     }).unwrap();
@@ -90,7 +96,7 @@ fn val_exists(filename: &str, value: String) -> Option<String> {
         return None;
     }
 
-    let mut f = File::open(filename).unwrap();
+    let mut f = fs::File::open(filename).unwrap();
     let mut tom = String::new();
     match f.read_to_string(&mut tom) {
         Ok(_) => { },
@@ -113,7 +119,7 @@ fn val_exists(filename: &str, value: String) -> Option<String> {
 }
 
 fn file_exists(filename: &str) -> bool {
-    match File::open(filename) {
+    match fs::File::open(filename) {
         Ok(_) => true,
         Err(_) => false,
     }
