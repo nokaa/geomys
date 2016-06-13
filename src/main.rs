@@ -5,6 +5,7 @@
  * The license may also be found at https://gnu.org/licenses/agpl.txt
  */
 
+#[macro_use]
 extern crate clap;
 extern crate rotor;
 extern crate rustc_serialize;
@@ -13,7 +14,7 @@ extern crate toml;
 mod gopher;
 mod util;
 
-use clap::App;
+use clap::{App, Arg};
 use rotor::{Loop, Config};
 use rotor::mio::tcp::TcpListener;
 use rustc_serialize::Decoder;
@@ -25,12 +26,19 @@ use std::io::Read;
 
 fn main() {
     let matches = App::new("geomys")
-        .version("0.1")
+        .version(crate_version!())
         .author("nokaa <nokaa@cock.li>")
         .about("An async gopher server")
-        .args_from_usage(
-            "-a, --addr=[ADDR] 'Sets the IP:PORT combination (default \"0.0.0.0:70\")'
-            [ROOT] 'Sets the root dir (default \".\")'")
+        .arg(Arg::with_name("addr")
+             .short("a")
+             .long("addr")
+             .value_name("ADDR")
+             .help("Sets the IP:PORT combination (default \"0.0.0.0:70\")")
+             .takes_value(true))
+        .arg(Arg::with_name("ROOT")
+             .help("Sets the root directory (default \"/var/gopher\")")
+             .required(false)
+             .index(1))
         .get_matches();
 
     // Get the user's home directory for attempting to read
@@ -42,7 +50,7 @@ fn main() {
     let addr: String;
     let root_dir: String;
 
-    if let Some(a) = matches.value_of("ADDR") {
+    if let Some(a) = matches.value_of("addr") {
         addr = String::from(a);
     } else if let Some(a) = val_exists(home, String::from("address")) {
         println!("reading address from {}", home);

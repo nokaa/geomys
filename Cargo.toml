@@ -4,7 +4,7 @@ version = "0.1.0"
 authors = ["nokaa <nokaa@cock.li>"]
 
 [dependencies]
-clap = "1.5.5"
+clap = "2.5.2"
 rotor = "0.6.3"
 toml = "0.1.28"
 rustc-serialize = "0.3"
