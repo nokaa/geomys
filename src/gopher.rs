@@ -13,7 +13,7 @@ use rotor::mio::{TryRead, TryWrite};
 use rotor::mio::tcp::{TcpListener, TcpStream};
 use rotor::{Machine, Response, EarlyScope, Scope};
 
-use super::util::*;
+use ::util::*;
 
 pub struct Context {
     pub root_dir: String,

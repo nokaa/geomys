@@ -49,6 +49,8 @@ pub fn local_path_for_request(request_path: &[u8], scope: &Scope<Context>) -> Op
             Err(_) => return None,
         };
         f.push(b'.');
+        f.push(b'\r');
+        f.push(b'\n');
     } else {
         f = match read_file(path) {
             Ok(f) => f,
